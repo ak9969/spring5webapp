@@ -2,30 +2,44 @@ package akshat.springFramework.spring5webapp.domain;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Created by jt on 12/22/19.
+ */
 @Entity
 public class Book {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String firstName;
+
+    private String title;
     private String isbn;
 
-    @ManyToMany
-    @JoinTable(name="author_book",joinColumns = @JoinColumn(name="book_id"),
-                inverseJoinColumns = @JoinColumn(name="author_id"))
-    private Set<Author> authors = new HashSet<>();
+    @ManyToOne
+    private Publisher publisher;
 
-    public Book(String firstName, String isbn) {
-        this.firstName = firstName;
-        this.isbn = isbn;
-    }
+    @ManyToMany
+    @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private Set<Author> authors = new HashSet<>();
 
     public Book() {
     }
 
+    public Book(String title, String isbn) {
+        this.title = title;
+        this.isbn = isbn;
+    }
+
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
 
     public Long getId() {
         return id;
@@ -35,12 +49,12 @@ public class Book {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getIsbn() {
@@ -51,21 +65,21 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public Set<Author> getAuthor() {
+    public Set<Author> getAuthors() {
         return authors;
     }
 
-    public void setAuthor(Set<Author> author) {
-        this.authors = author;
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
     }
 
     @Override
     public String toString() {
         return "Book{" +
                 "id=" + id +
-                ", firstName='" + firstName + '\'' +
+                ", title='" + title + '\'' +
                 ", isbn='" + isbn + '\'' +
-                ", author=" + authors +
+                ", authors=" + authors +
                 '}';
     }
 
@@ -73,12 +87,14 @@ public class Book {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Book book = (Book) o;
-        return Objects.equals(id, book.id);
+
+        return id != null ? id.equals(book.id) : book.id == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return id != null ? id.hashCode() : 0;
     }
 }
